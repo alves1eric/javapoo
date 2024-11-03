@@ -1,0 +1,69 @@
+public class Produto {
+    // Atributos da classe Produto
+    private String nome;           
+    private double preco;          
+    private String cor;            
+    private double peso;           
+    private int quantidade;        
+    private String codigoBarra;    
+    private String descricao;      
+    private String categoria;     
+    private String fornecedor;    
+
+    // Construtor da classe Produto
+    public Produto(String nome, double preco, String cor, double peso, int quantidade, String codigoBarra,
+                   String descricao, String categoria, String fornecedor) {
+        this.nome = nome;
+        this.preco = preco;
+        this.cor = cor;
+        this.peso = peso;
+        this.quantidade = quantidade;
+        this.codigoBarra = codigoBarra;
+        this.descricao = descricao;
+        this.categoria = categoria;
+        this.fornecedor = fornecedor;
+    }
+
+    // Métodos getters para acessar os atributos
+    public String getNome() {
+        return nome;
+    }
+
+    public double getPreco() {
+        return preco;
+    }
+
+    public String getCor() {
+        return cor;
+    }
+
+    public double getPeso() {
+        return peso;
+    }
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public String getCodigoBarra() {
+        return codigoBarra;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public String getFornecedor() {
+        return fornecedor;
+    }
+
+    // Método para formatar a saída em uma linha para o arquivo
+    public String toLine() {
+        return nome + ";" + preco + ";" + cor + ";" + peso + ";" + quantidade + ";" + codigoBarra + 
+               ";" + descricao + ";" + categoria + ";" + fornecedor;
+    }
+}

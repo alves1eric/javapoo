@@ -1,0 +1,138 @@
+import java.io.*; 
+import java.util.ArrayList; 
+import java.util.List; 
+import java.util.Scanner; 
+
+public class Main {
+    private static final String NOME_ARQUIVO = "produtos.txt"; 
+    private static List<Produto> produtos = new ArrayList<>(); 
+    private static Scanner scanner = new Scanner(System.in); 
+
+    public static void main(String[] args) {
+        carregarProdutos(); 
+
+        
+        System.out.println("==================================");
+        System.out.println("           OPTISTOCK              ");
+        System.out.println("   Sistema de Controle de Estoque ");
+        System.out.println("==================================");
+
+        int opcao;
+        do {
+            System.out.println("========================");
+            System.out.println("\nMenu:");
+            System.out.println("1. Cadastrar produto");
+            System.out.println("2. Listar produtos");
+            System.out.println("3. Deletar produto");
+            System.out.println("4. Sair\n");
+            System.out.println("========================");
+            System.out.print("Opção: ");
+            opcao = scanner.nextInt();
+
+            switch (opcao) {
+                case 1:
+                    cadastrarProduto(); 
+                    break;
+                case 2:
+                    listarProdutos();
+                    break;
+                case 3:
+                    deletarProduto(); 
+                    break;
+            }
+        } while (opcao != 4); 
+    }
+
+    // Método para verificar se o produto já existe
+    private static boolean produtoExistente(String nome) {
+        return produtos.stream().anyMatch(produto -> produto.getNome().equalsIgnoreCase(nome));
+    }
+
+    private static void cadastrarProduto() {
+        
+        System.out.print("Nome do produto: ");
+        String nome = scanner.next();
+
+        // Verifica se o produto já existe
+        if (produtoExistente(nome)) {
+            System.out.println("Produto já cadastrado. Tente cadastrar outro produto.");
+            return; 
+        }
+
+        System.out.print("Preço: ");
+        double preco = scanner.nextDouble();
+        System.out.print("Cor: ");
+        String cor = scanner.next();
+        System.out.print("Peso: ");
+        double peso = scanner.nextDouble();
+        System.out.print("Quantidade: ");
+        int quantidade = scanner.nextInt();
+        System.out.print("Código de barra: ");
+        String codigoBarra = scanner.next();
+        System.out.print("Descrição: ");
+        scanner.nextLine(); 
+        String descricao = scanner.nextLine(); 
+        System.out.print("Categoria: ");
+        String categoria = scanner.nextLine(); 
+        System.out.print("Fornecedor: ");
+        String fornecedor = scanner.nextLine();
+
+        // Adiciona o novo produto à lista
+        produtos.add(new Produto(nome, preco, cor, peso, quantidade, codigoBarra, descricao, categoria, fornecedor));
+        salvarProdutos();
+        System.out.println("Produto cadastrado com sucesso!");
+    }
+
+    private static void listarProdutos() {
+        if (produtos.isEmpty()) { // Verifica se a lista de produtos está vazia
+            System.out.println("Nenhum produto cadastrado.");
+        } else {
+            for (Produto produto : produtos) { // Lista todos os produtos
+                System.out.println(produto.getNome() + " - R$" + produto.getPreco() + 
+                                   " - " + produto.getCor() + " - " + produto.getPeso() + 
+                                   "kg - " + produto.getQuantidade() + " unidades - " + 
+                                   produto.getCodigoBarra() + " - " + produto.getDescricao() + 
+                                   " - " + produto.getCategoria() + " - " + produto.getFornecedor());
+            }
+        }
+    }
+
+    private static void deletarProduto() {
+        System.out.print("Digite o nome do produto a ser deletado: ");
+        String nomeProduto = scanner.next();
+
+        // Remove o produto da lista
+        if (produtos.removeIf(produto -> produto.getNome().equalsIgnoreCase(nomeProduto))) {
+            salvarProdutos(); 
+            System.out.println("Produto deletado com sucesso!");
+        } else {
+            System.out.println("Produto não encontrado.");
+        }
+    }
+
+    private static void salvarProdutos() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(NOME_ARQUIVO))) {
+            for (Produto produto : produtos) {
+                writer.write(produto.toLine()); 
+                writer.newLine(); 
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar os produtos: " + e.getMessage());
+        }
+    }
+
+    private static void carregarProdutos() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(NOME_ARQUIVO))) { 
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                String[] dados = linha.split(";"); 
+                produtos.add(new Produto(dados[0], Double.parseDouble(dados[1]), dados[2], 
+                                          Double.parseDouble(dados[3]), 
+                                          Integer.parseInt(dados[4]), 
+                                          dados[5], dados[6], dados[7], dados[8]));
+            }
+        } catch (IOException e) {
+            
+        }
+    }
+}
